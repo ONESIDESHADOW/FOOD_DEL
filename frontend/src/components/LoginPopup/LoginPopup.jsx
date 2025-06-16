@@ -30,11 +30,19 @@ const LoginPopup = ({ setShowLogin }) => {
     }
 
     const response = await axios.post(newUrl, data);
-
+    
     if (response.data.success) {
       setToken(response.data.token);
       localStorage.setItem("token", response.data.token);
       setShowLogin(false);
+
+      // Redirect based on role
+      if (response.data.role === "admin") {
+        window.location.href = "http://localhost:5174/";
+        localStorage.removeItem("token", response.data.token);
+      } else {
+        window.location.reload(); // or navigate to homepage/dashboard
+      }
     } else {
       // alert(response.data.message);
       setError(response.data.message);

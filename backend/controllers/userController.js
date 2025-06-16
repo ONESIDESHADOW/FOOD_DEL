@@ -8,6 +8,21 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+
+    // Check if admin
+    if (
+      email === process.env.ADMIN_EMAIL &&
+      password === process.env.ADMIN_PASSWORD
+    ) {
+      const token = jwt.sign({ role: "admin" }, process.env.JWT_SECRET);
+      return res.json({
+        success: true,
+        message: "Admin login successful",
+        role: "admin",
+        token,
+      });
+    }
+    
     const user = await userModel.findOne({ email });
 
     if (!user) {
